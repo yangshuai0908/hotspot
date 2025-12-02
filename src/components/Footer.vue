@@ -12,13 +12,13 @@ const currentYear = ref(new Date().getFullYear())
         <p>HotSpot AI 致力于汇聚全网热点，为您提供最新、最热门的资讯内容。</p>
       </div>
 
-      <!-- <div class="footer-section">
+      <div class="footer-section">
         <h3>快速链接</h3>
         <ul>
           <li><router-link to="/">首页</router-link></li>
-          <li><router-link to="/about">关于我们</router-link></li>
+          <li><router-link to="/History">历史上的今天</router-link></li>
         </ul>
-      </div> -->
+      </div>
 
       <div class="footer-section">
         <h3>联系方式</h3>
