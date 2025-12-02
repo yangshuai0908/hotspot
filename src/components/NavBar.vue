@@ -88,6 +88,9 @@ const { currentTime, lunarInfo } = useDateTime(1000)
       border-radius: 50%;
       border: 1px solid #eaeaea;
     }
+    .right:hover {
+      background-color: #d4d4d8;
+    }
   }
 }
 </style>

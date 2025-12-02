@@ -114,7 +114,7 @@ export const getDateTimeInfo = (date = new Date()) => {
 export const useDateTime = (interval = 1000) => {
   const currentTime = ref('')
   const lunarInfo = ref('')
-  const timer = null
+  const timer = ref(null)
 
   const updateDateTime = () => {
     const now = new Date()
