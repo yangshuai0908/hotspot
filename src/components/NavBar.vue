@@ -16,8 +16,8 @@ const { currentTime, lunarInfo } = useDateTime(1000)
         </div>
       </div>
       <div class="middle">
-        <div> {{ currentTime }} </div>
-        <div> {{ lunarInfo }} </div>
+        <div class="time"> {{ currentTime }} </div>
+        <div class="lunar"> {{ lunarInfo }} </div>
       </div>
       <div class="right">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor">
@@ -67,7 +67,15 @@ const { currentTime, lunarInfo } = useDateTime(1000)
       display: flex;
       flex-direction: column;
       align-items: center;
-      color: #62748e;
+
+      .time {
+        font-size: 18px;
+        font-weight: 700;
+      }
+
+      .lunar {
+        color: #62748e;
+      }
     }
 
     .right {
