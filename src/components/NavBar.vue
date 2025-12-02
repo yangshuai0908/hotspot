@@ -32,6 +32,11 @@ const { currentTime, lunarInfo } = useDateTime(1000)
 
 <style lang="scss" scoped>
 .header-page {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
   background-color: #fff;
   box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.05);
 
@@ -90,6 +95,129 @@ const { currentTime, lunarInfo } = useDateTime(1000)
     }
     .right:hover {
       background-color: #d4d4d8;
+    }
+  }
+
+  // 平板端响应式
+  @media (max-width: 1024px) {
+    .header {
+      padding: 0 20px;
+      
+      .left {
+        .left_title {
+          .slogan {
+            display: none; // 隐藏标语
+          }
+        }
+      }
+      
+      .middle {
+        .time {
+          font-size: 16px;
+        }
+        
+        .lunar {
+          font-size: 12px;
+        }
+      }
+    }
+  }
+
+  // 移动端响应式
+  @media (max-width: 768px) {
+    .header {
+      padding: 0 15px;
+      height: 56px; // 减小高度
+      justify-content: space-between; // 改为space-between
+      
+      .left {
+        flex: 1;
+        min-width: 0; // 防止flex子项溢出
+        
+        img {
+          width: 32px;
+          height: 32px;
+        }
+        
+        .left_title {
+          margin-left: 8px;
+          
+          .hot {
+            font-size: 16px;
+          }
+          
+          .slogan {
+            display: none;
+          }
+        }
+      }
+      
+      .middle {
+        flex: 1;
+        justify-content: center;
+        
+        .time {
+          font-size: 14px;
+          font-weight: 600;
+        }
+        
+        .lunar {
+          font-size: 11px;
+          white-space: nowrap; // 防止换行
+          overflow: hidden;
+          text-overflow: ellipsis; // 超出显示省略号
+          max-width: 200px;
+        }
+      }
+      
+      .right {
+        width: 28px;
+        height: 28px;
+        flex-shrink: 0; // 防止压缩
+      }
+    }
+  }
+
+  // 小屏幕手机响应式
+  @media (max-width: 480px) {
+    .header {
+      padding: 0 10px;
+      height: 52px;
+      
+      .left {
+        .left_title {
+          .hot {
+            font-size: 14px;
+          }
+        }
+      }
+      
+      .middle {
+        .time {
+          font-size: 12px;
+        }
+        
+        .lunar {
+          font-size: 10px;
+          max-width: 150px;
+        }
+      }
+      
+      .right {
+        width: 24px;
+        height: 24px;
+      }
+    }
+  }
+
+  // 超小屏幕响应式
+  @media (max-width: 360px) {
+    .header {
+      .middle {
+        .lunar {
+          display: none; // 隐藏农历信息
+        }
+      }
     }
   }
 }

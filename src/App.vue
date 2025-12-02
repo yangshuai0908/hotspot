@@ -24,6 +24,22 @@ import Footer from './components/Footer.vue'
 
 .main-content {
   flex: 1;
-  margin: 0 360px;
+  margin: 64px 20px 0 20px; /* 顶部64px为固定导航栏留出空间，左右边距响应式 */
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+// 响应式调整
+@media (max-width: 768px) {
+  .main-content {
+    margin: 56px 15px 0 15px; /* 移动端导航栏高度为56px */
+  }
+}
+
+@media (max-width: 480px) {
+  .main-content {
+    margin: 52px 10px 0 10px; /* 小屏幕导航栏高度为52px */
+  }
 }
 </style>
