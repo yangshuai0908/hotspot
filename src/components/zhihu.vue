@@ -3,14 +3,14 @@
         <div class="hot_item">
             <div class="hot_header">
                 <div class="header_title">
-                    <svg t="1764664627426" class="icon" viewBox="0 0 1024 1024" version="1.1"
-                        xmlns="http://www.w3.org/2000/svg" p-id="19888" width="25" height="25">
+                    <svg t="1764670330514" class="icon" viewBox="0 0 1024 1024" version="1.1"
+                        xmlns="http://www.w3.org/2000/svg" p-id="30888" width="25" height="25">
                         <path
-                            d="M511.96976 0a511.96976 511.96976 0 1 0 512.06576 511.96976A511.96976 511.96976 0 0 0 511.96976 0z m253.344871 328.80113a22.848079 22.848079 0 0 1-18.912065 19.776068l-94.080324 15.840055V599.042059a90.528311 90.528311 0 0 0 9.984035 41.088141l58.848202 112.992389a19.584067 19.584067 0 0 1-17.47206 28.320097h-50.016172a19.200066 19.200066 0 0 1-17.56806-10.272035l-58.560202-110.016378a89.568308 89.568308 0 0 1-10.560036-42.240145V378.817302l-132.000454 22.080076v325.441119a31.87211 31.87211 0 0 1-14.208049 26.20809L384.00132 776.258668a23.040079 23.040079 0 0 1-35.616122-19.200066v-341.761174l-96.384332 16.128055a22.848079 22.848079 0 0 1-26.30409-25.440087l5.088017-41.184142a22.848079 22.848079 0 0 1 19.008066-19.776068l494.017698-82.848285a22.848079 22.848079 0 0 1 26.592091 25.440088z"
-                            fill="#DA282A" p-id="19889"></path>
+                            d="M940.35 795.875c0 78.652-63.771 142.422-142.421 142.422H228.226c-78.655 0-142.427-63.772-142.427-142.422v-569.7c0-78.658 63.772-142.432 142.427-142.432H797.93c78.658 0 142.432 63.772 142.432 142.431l-0.01 569.701zM415.621 543.356h125.593c0-29.528-13.923-46.824-13.923-46.824H418.295c2.59-53.493 4.91-122.15 5.739-147.65h103.677s-0.561-43.871-12.091-43.871H333.378s10.971-57.374 25.594-82.7c0 0-54.417-2.938-72.98 69.622-18.562 72.56-46.404 116.43-49.356 124.446-2.953 8.013 16.031 3.795 24.044 0 8.015-3.797 44.294-16.876 54.84-67.496h56.35c0.76 32.082 2.99 130.397 2.287 147.649H258.15c-16.45 11.81-21.936 46.824-21.936 46.824h132.592c-5.53 36.615-15.239 83.813-28.817 108.835-21.513 39.655-32.904 75.934-110.525 138.368 0 0-12.657 9.28 26.576 5.906 39.231-3.372 76.356-13.498 102.087-64.963 13.378-26.756 27.213-60.697 38.006-95.121l-0.04 0.12 109.26 125.795s14.343-33.747 3.798-70.87l-80.994-90.698-27.42 20.279-0.031 0.099c7.615-26.7 13.092-53.095 14.795-76.061 0.042-0.553 0.084-1.119 0.121-1.689zM567.366 295.73v435.35h45.77l18.753 52.405 79.328-52.405h99.978V295.73H567.366zM764.09 684.253h-51.968l-64.817 42.817-15.319-42.817H615.81v-339.94h148.28v339.94z m0 0"
+                            fill="#429efe" p-id="30889"></path>
                     </svg>
                     <span>
-                        少数派
+                        知乎
                     </span>
                 </div>
                 <div class="header_title_search">
@@ -20,18 +20,15 @@
                             d="M476.808045 0.000043C213.401753 0.106685-0.031993 213.68973 0 477.074693S213.551052 953.98938 476.94668 954.021373s476.957344-213.412417 477.085315-476.808045A477.010665 477.010665 0 0 0 476.808045 0.000043z m273.761252 353.369671L441.861388 661.853674a43.1901 43.1901 0 0 1-62.023117 0L202.214984 484.251715a43.864079 43.864079 0 1 1 62.033781-62.033782l147.21959 147.21959 277.89897-276.86454a43.861946 43.861946 0 1 1 62.023117 62.033781z m0 0"
                             p-id="15561" fill="#0e793c"></path>
                     </svg>
-                    {{ name }}
+                    热搜
                 </div>
             </div>
             <div class="hot-content">
                 <div v-for="(item, index) in WeiBoList" :key="item.id" class="hot-list-item"
-                    :class="{ 'top-rank': index < 3 }">
-                    <div class="rank-number">{{ index + 1 }}</div>
+                    :class="{ 'top-rank': index < 3, 'has-label': item.label }">
+                    <div class="rank-number">{{ item.label || (index + 1) }}</div>
                     <div class="item-info">
                         <h4 class="item-title">{{ item.title }}</h4>
-                        <div class="item-meta">
-                            <span class="hot-value">{{ item.heat }}</span>
-                        </div>
                     </div>
                     <div class="item-arrow">›</div>
                 </div>
@@ -41,7 +38,7 @@
                     <span>{{ timedata }}</span>
                 </div>
                 <div class="divider"></div>
-                <div class="refresh-btn" @click="getWeiBoHotList">
+                <div class="refresh-btn" @click="getWeiBoHotList" :class="{ loading: isLoading }">
                     <svg t="1764661476471" class="icon" viewBox="0 0 1024 1024" version="1.1"
                         xmlns="http://www.w3.org/2000/svg" p-id="12307" width="24" height="24">
                         <path
@@ -59,18 +56,29 @@ import { onMounted, ref } from 'vue'
 import { typeAPI } from '../api/WeiBo'
 
 const WeiBoList = ref([]) // 获取热搜榜数据
-const name = ref('') // 获取热搜榜名称
 const timedata = ref('') // 更新时间
+const isLoading = ref(false) // 加载状态
 
 const getWeiBoHotList = async () => {
-    const res = await typeAPI.getHotListByType('sspai')
+    if (isLoading.value) return // 防止重复点击
 
-    // 计算更新时间，传入时间戳
-    const updateTime = calculateUpdateTime(res.date.date, res.date.hms, res.date.time)
-    timedata.value = updateTime
+    isLoading.value = true
 
-    name.value = res.api.name
-    WeiBoList.value = res.data
+    try {
+        const res = await typeAPI.getHotListByType('zhihu')
+        console.log(res);
+
+        // 计算更新时间，传入时间戳
+        const updateTime = calculateUpdateTime(res.timestamp)
+        timedata.value = updateTime
+
+        // name.value = res.api.name
+        WeiBoList.value = res.data
+    } catch (error) {
+        console.error('获取数据失败:', error)
+    } finally {
+        isLoading.value = false
+    }
 }
 
 // 计算更新时间的函数
@@ -229,13 +237,30 @@ onMounted(() => {
                     color: #666;
                 }
 
-                // 前三名特殊样式
-                &.top-rank {
-                    .rank-number {
-                        background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
-                        color: white;
-                        box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
-                    }
+                // 有label的项目使用第1名颜色
+                &.has-label .rank-number {
+                    background-color: #ea444d;
+                    color: white;
+                    box-shadow: 0 2px 8px rgba(234, 68, 77, 0.3);
+                }
+
+                // 前三名特殊样式（仅当没有label时）
+                &:nth-child(1):not(.has-label) .rank-number {
+                    background-color: #ea444d;
+                    color: white;
+                    box-shadow: 0 2px 8px rgba(234, 68, 77, 0.3);
+                }
+
+                &:nth-child(2):not(.has-label) .rank-number {
+                    background-color: #ed702d;
+                    color: white;
+                    box-shadow: 0 2px 8px rgba(237, 112, 45, 0.3);
+                }
+
+                &:nth-child(3):not(.has-label) .rank-number {
+                    background-color: #eead3f;
+                    color: white;
+                    box-shadow: 0 2px 8px rgba(238, 173, 63, 0.3);
                 }
 
                 // 内容信息
@@ -253,19 +278,6 @@ onMounted(() => {
                         -webkit-line-clamp: 2;
                         -webkit-box-orient: vertical;
                         overflow: hidden;
-                    }
-
-                    .item-meta {
-                        display: flex;
-                        align-items: center;
-                        gap: 12px;
-                        font-size: 12px;
-                        color: #999;
-
-                        .hot-value {
-                            color: #ff6b6b;
-                            font-weight: 500;
-                        }
                     }
                 }
 
@@ -316,6 +328,25 @@ onMounted(() => {
                     &:hover {
                         transform: rotate(180deg);
                     }
+                }
+
+                &.loading .icon {
+                    animation: spin 1s linear infinite;
+                    cursor: not-allowed;
+
+                    &:hover {
+                        transform: none;
+                    }
+                }
+            }
+
+            @keyframes spin {
+                from {
+                    transform: rotate(0deg);
+                }
+
+                to {
+                    transform: rotate(360deg);
                 }
             }
         }

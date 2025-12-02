@@ -26,17 +26,14 @@
               d="M476.808045 0.000043C213.401753 0.106685-0.031993 213.68973 0 477.074693S213.551052 953.98938 476.94668 954.021373s476.957344-213.412417 477.085315-476.808045A477.010665 477.010665 0 0 0 476.808045 0.000043z m273.761252 353.369671L441.861388 661.853674a43.1901 43.1901 0 0 1-62.023117 0L202.214984 484.251715a43.864079 43.864079 0 1 1 62.033781-62.033782l147.21959 147.21959 277.89897-276.86454a43.861946 43.861946 0 1 1 62.023117 62.033781z m0 0"
               p-id="15561" fill="#0e793c"></path>
           </svg>
-          {{ name }}
+          热搜
         </div>
       </div>
       <div class="hot-content">
-        <div v-for="(item, index) in WeiBoList" :key="item.id" class="hot-list-item" :class="{ 'top-rank': index < 3 }">
-          <div class="rank-number">{{ index + 1 }}</div>
+        <div v-for="(item, index) in WeiBoList" :key="item.id" class="hot-list-item" :class="{ 'top-rank': index < 3, 'has-label': item.label }">
+          <div class="rank-number">{{ item.label || (index + 1) }}</div>
           <div class="item-info">
             <h4 class="item-title">{{ item.title }}</h4>
-            <div class="item-meta">
-              <span class="hot-value">{{ item.heat }}</span>
-            </div>
           </div>
           <div class="item-arrow">›</div>
         </div>
@@ -46,7 +43,7 @@
           <span>{{ timedata }}</span>
         </div>
         <div class="divider"></div>
-        <div class="refresh-btn" @click="getWeiBoHotList">
+        <div class="refresh-btn" @click="getWeiBoHotList" :class="{ loading: isLoading }">
           <svg t="1764661476471" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
             p-id="12307" width="24" height="24">
             <path
@@ -64,18 +61,29 @@ import { onMounted, ref } from 'vue'
 import { typeAPI } from '../api/WeiBo'
 
 const WeiBoList = ref([]) // 获取热搜榜数据
-const name = ref('') // 获取热搜榜名称
 const timedata = ref('') // 更新时间
+const isLoading = ref(false) // 加载状态
 
 const getWeiBoHotList = async () => {
-  const res = await typeAPI.getHotListByType('weibo')
+  if (isLoading.value) return // 防止重复点击
   
-  // 计算更新时间，传入时间戳
-  const updateTime = calculateUpdateTime(res.date.date, res.date.hms, res.date.time)
-  timedata.value = updateTime
+  isLoading.value = true
+  
+  try {
+    const res = await typeAPI.getHotListByType('weibo')
+    console.log(res);
+    
+    // 计算更新时间，传入时间戳
+    const updateTime = calculateUpdateTime(res.timestamp)
+    timedata.value = updateTime
 
-  name.value = res.api.name
-  WeiBoList.value = res.data
+    // name.value = res.api.name
+    WeiBoList.value = res.data
+  } catch (error) {
+    console.error('获取数据失败:', error)
+  } finally {
+    isLoading.value = false
+  }
 }
 
 // 计算更新时间的函数
@@ -234,13 +242,30 @@ onMounted(() => {
           color: #666;
         }
 
-        // 前三名特殊样式
-        &.top-rank {
-          .rank-number {
-            background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
-            color: white;
-            box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
-          }
+        // 有label的项目使用第1名颜色
+        &.has-label .rank-number {
+          background-color: #ea444d;
+          color: white;
+          box-shadow: 0 2px 8px rgba(234, 68, 77, 0.3);
+        }
+        
+        // 前三名特殊样式（仅当没有label时）
+        &:nth-child(1):not(.has-label) .rank-number {
+          background-color: #ea444d;
+          color: white;
+          box-shadow: 0 2px 8px rgba(234, 68, 77, 0.3);
+        }
+        
+        &:nth-child(2):not(.has-label) .rank-number {
+          background-color: #ed702d;
+          color: white;
+          box-shadow: 0 2px 8px rgba(237, 112, 45, 0.3);
+        }
+        
+        &:nth-child(3):not(.has-label) .rank-number {
+          background-color: #eead3f;
+          color: white;
+          box-shadow: 0 2px 8px rgba(238, 173, 63, 0.3);
         }
 
         // 内容信息
@@ -258,19 +283,6 @@ onMounted(() => {
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
-          }
-
-          .item-meta {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 12px;
-            color: #999;
-
-            .hot-value {
-              color: #ff6b6b;
-              font-weight: 500;
-            }
           }
         }
 
@@ -321,6 +333,24 @@ onMounted(() => {
           &:hover {
             transform: rotate(180deg);
           }
+        }
+        
+        &.loading .icon {
+          animation: spin 1s linear infinite;
+          cursor: not-allowed;
+          
+          &:hover {
+            transform: none;
+          }
+        }
+      }
+      
+      @keyframes spin {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
         }
       }
     }

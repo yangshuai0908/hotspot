@@ -3,7 +3,7 @@ import { showSuccessToast } from './toast.js'
 
 // 创建axios实例
 const api = axios.create({
-  baseURL: 'https://xzdx.top/api/tophub',
+  baseURL: '/api/',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json'
@@ -26,13 +26,11 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   response => {
     // 对响应数据做点什么
-    // console.log('响应接收:', response.status)
-    // console.log('响应接收:', response.data.msg)
     if (response.status == 200) {
-    //   console.log('响应成功:', response.data)
       // 弹窗提醒
       showSuccessToast(response.data.msg)
     }
+    console.log('响应接收:', response)
     return response.data
   },
   error => {

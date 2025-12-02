@@ -3,8 +3,10 @@
     <weibo />
     <douyin />
     <bilibili />
+    <baidu />
+    <jinritoutiao />
     <zhihu />
-    <saoshupai />
+    <tenxun />
   </div>
 </template>
 
@@ -12,8 +14,10 @@
 import Weibo from '../components/weibo.vue'
 import Bilibili from '../components/bilibili.vue'
 import Douyin from '../components/douyin.vue'
-import Zhihu from '../components/baidu.vue'
-import Saoshupai from '../components/saoshupai.vue'
+import baidu from '../components/baidu.vue'
+import Jinritoutiao from '../components/jinritoutiao.vue'
+import Zhihu from '../components/zhihu.vue'
+import Tenxun from '../components/tenxun.vue'
 
 
 </script>

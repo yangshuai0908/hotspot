@@ -3,20 +3,20 @@
         <div class="hot_item">
             <div class="hot_header">
                 <div class="header_title">
-                    <svg t="1764664263592" class="icon" viewBox="0 0 1024 1024" version="1.1"
-                        xmlns="http://www.w3.org/2000/svg" p-id="17678" width="25" height="25">
+                    <svg t="1764669893333" class="icon" viewBox="0 0 1024 1024" version="1.1"
+                        xmlns="http://www.w3.org/2000/svg" p-id="26608" width="25" height="25">
                         <path
                             d="M0 0m184.32 0l655.36 0q184.32 0 184.32 184.32l0 655.36q0 184.32-184.32 184.32l-655.36 0q-184.32 0-184.32-184.32l0-655.36q0-184.32 184.32-184.32Z"
-                            fill="#111111" p-id="17679"></path>
+                            fill="#111111" p-id="26609"></path>
                         <path
                             d="M204.27776 670.59712a246.25152 246.25152 0 0 1 245.97504-245.97504v147.57888a98.49856 98.49856 0 0 0-98.38592 98.38592c0 48.34304 26.14272 100.352 83.54816 100.352 3.81952 0 93.55264-0.88064 93.55264-77.19936V134.35904h157.26592a133.31456 133.31456 0 0 0 133.12 132.99712l-0.13312 147.31264a273.152 273.152 0 0 1-142.62272-38.912l-0.06144 317.98272c0 146.00192-124.24192 224.77824-241.14176 224.77824-131.74784 0.03072-231.1168-106.56768-231.1168-247.92064z"
-                            fill="#FF4040" p-id="17680"></path>
+                            fill="#FF4040" p-id="26610"></path>
                         <path
                             d="M164.92544 631.23456a246.25152 246.25152 0 0 1 245.97504-245.97504v147.57888a98.49856 98.49856 0 0 0-98.38592 98.38592c0 48.34304 26.14272 100.352 83.54816 100.352 3.81952 0 93.55264-0.88064 93.55264-77.19936V94.99648h157.26592a133.31456 133.31456 0 0 0 133.12 132.99712l-0.13312 147.31264a273.152 273.152 0 0 1-142.62272-38.912l-0.06144 317.98272c0 146.00192-124.24192 224.77824-241.14176 224.77824-131.74784 0.03072-231.1168-106.56768-231.1168-247.92064z"
-                            fill="#00F5FF" p-id="17681"></path>
+                            fill="#00F5FF" p-id="26611"></path>
                         <path
                             d="M410.91072 427.58144c-158.8224 20.15232-284.44672 222.72-154.112 405.00224 120.40192 98.47808 373.68832 41.20576 380.70272-171.85792l-0.17408-324.1472a280.7296 280.7296 0 0 0 142.88896 38.62528V261.2224a144.98816 144.98816 0 0 1-72.8064-54.82496 135.23968 135.23968 0 0 1-54.70208-72.45824h-123.66848l-0.08192 561.41824c-0.11264 78.46912-130.9696 106.41408-164.18816 30.2592-83.18976-39.77216-64.37888-190.9248 46.31552-192.57344z"
-                            fill="#FFFFFF" p-id="17682"></path>
+                            fill="#FFFFFF" p-id="26612"></path>
                     </svg>
                     <span>
                         抖音
@@ -29,18 +29,15 @@
                             d="M476.808045 0.000043C213.401753 0.106685-0.031993 213.68973 0 477.074693S213.551052 953.98938 476.94668 954.021373s476.957344-213.412417 477.085315-476.808045A477.010665 477.010665 0 0 0 476.808045 0.000043z m273.761252 353.369671L441.861388 661.853674a43.1901 43.1901 0 0 1-62.023117 0L202.214984 484.251715a43.864079 43.864079 0 1 1 62.033781-62.033782l147.21959 147.21959 277.89897-276.86454a43.861946 43.861946 0 1 1 62.023117 62.033781z m0 0"
                             p-id="15561" fill="#0e793c"></path>
                     </svg>
-                    {{ name }}
+                    热搜
                 </div>
             </div>
             <div class="hot-content">
                 <div v-for="(item, index) in WeiBoList" :key="item.id" class="hot-list-item"
-                    :class="{ 'top-rank': index < 3 }">
-                    <div class="rank-number">{{ index + 1 }}</div>
+                    :class="{ 'top-rank': index < 3, 'has-label': item.label }">
+                    <div class="rank-number">{{ item.label || (index + 1) }}</div>
                     <div class="item-info">
                         <h4 class="item-title">{{ item.title }}</h4>
-                        <div class="item-meta">
-                            <span class="hot-value">{{ item.heat }}</span>
-                        </div>
                     </div>
                     <div class="item-arrow">›</div>
                 </div>
@@ -50,7 +47,7 @@
                     <span>{{ timedata }}</span>
                 </div>
                 <div class="divider"></div>
-                <div class="refresh-btn" @click="getWeiBoHotList">
+                <div class="refresh-btn" @click="getWeiBoHotList" :class="{ loading: isLoading }">
                     <svg t="1764661476471" class="icon" viewBox="0 0 1024 1024" version="1.1"
                         xmlns="http://www.w3.org/2000/svg" p-id="12307" width="24" height="24">
                         <path
@@ -68,18 +65,29 @@ import { onMounted, ref } from 'vue'
 import { typeAPI } from '../api/WeiBo'
 
 const WeiBoList = ref([]) // 获取热搜榜数据
-const name = ref('') // 获取热搜榜名称
 const timedata = ref('') // 更新时间
+const isLoading = ref(false) // 加载状态
 
 const getWeiBoHotList = async () => {
-    const res = await typeAPI.getHotListByType('douyin')
+    if (isLoading.value) return // 防止重复点击
 
-    // 计算更新时间，传入时间戳
-    const updateTime = calculateUpdateTime(res.date.date, res.date.hms, res.date.time)
-    timedata.value = updateTime
+    isLoading.value = true
 
-    name.value = res.api.name
-    WeiBoList.value = res.data
+    try {
+        const res = await typeAPI.getHotListByType('douyin')
+        console.log(res);
+
+        // 计算更新时间，传入时间戳
+        const updateTime = calculateUpdateTime(res.timestamp)
+        timedata.value = updateTime
+
+        // name.value = res.api.name
+        WeiBoList.value = res.data
+    } catch (error) {
+        console.error('获取数据失败:', error)
+    } finally {
+        isLoading.value = false
+    }
 }
 
 // 计算更新时间的函数
@@ -238,13 +246,30 @@ onMounted(() => {
                     color: #666;
                 }
 
-                // 前三名特殊样式
-                &.top-rank {
-                    .rank-number {
-                        background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
-                        color: white;
-                        box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
-                    }
+                // 有label的项目使用第1名颜色
+                &.has-label .rank-number {
+                    background-color: #ea444d;
+                    color: white;
+                    box-shadow: 0 2px 8px rgba(234, 68, 77, 0.3);
+                }
+
+                // 前三名特殊样式（仅当没有label时）
+                &:nth-child(1):not(.has-label) .rank-number {
+                    background-color: #ea444d;
+                    color: white;
+                    box-shadow: 0 2px 8px rgba(234, 68, 77, 0.3);
+                }
+
+                &:nth-child(2):not(.has-label) .rank-number {
+                    background-color: #ed702d;
+                    color: white;
+                    box-shadow: 0 2px 8px rgba(237, 112, 45, 0.3);
+                }
+
+                &:nth-child(3):not(.has-label) .rank-number {
+                    background-color: #eead3f;
+                    color: white;
+                    box-shadow: 0 2px 8px rgba(238, 173, 63, 0.3);
                 }
 
                 // 内容信息
@@ -262,19 +287,6 @@ onMounted(() => {
                         -webkit-line-clamp: 2;
                         -webkit-box-orient: vertical;
                         overflow: hidden;
-                    }
-
-                    .item-meta {
-                        display: flex;
-                        align-items: center;
-                        gap: 12px;
-                        font-size: 12px;
-                        color: #999;
-
-                        .hot-value {
-                            color: #ff6b6b;
-                            font-weight: 500;
-                        }
                     }
                 }
 
@@ -325,6 +337,25 @@ onMounted(() => {
                     &:hover {
                         transform: rotate(180deg);
                     }
+                }
+
+                &.loading .icon {
+                    animation: spin 1s linear infinite;
+                    cursor: not-allowed;
+
+                    &:hover {
+                        transform: none;
+                    }
+                }
+            }
+
+            @keyframes spin {
+                from {
+                    transform: rotate(0deg);
+                }
+
+                to {
+                    transform: rotate(360deg);
                 }
             }
         }
