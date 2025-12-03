@@ -1,23 +1,25 @@
 <template>
   <div class="container">
-    <div v-for="(component, index) in lazyComponents" :key="component.name" 
-         ref="componentRefs" 
-         :data-index="index"
-         class="component-wrapper">
-      <component :is="component.component" v-if="component.isVisible" />
-      <div v-else class="lazy-placeholder">
-        <div class="placeholder-content">
-          <div class="placeholder-icon"></div>
-          <div class="placeholder-text">{{ component.title }}</div>
-          <div class="placeholder-desc">滚动到此处自动加载</div>
+    <template v-for="(item, index) in lazyComponents" :key="item?.name || index">
+      <div v-if="item && item.name && isSiteEnabled(item.name)"
+           ref="componentRefs" 
+           :data-index="index"
+           class="component-wrapper">
+        <component :is="item.component" v-if="item.isVisible" />
+        <div v-else class="lazy-placeholder">
+          <div class="placeholder-content">
+            <div class="placeholder-icon"></div>
+            <div class="placeholder-text">{{ item.title }}</div>
+            <div class="placeholder-desc">滚动到此处自动加载</div>
+          </div>
         </div>
       </div>
-    </div>
+    </template>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, markRaw } from 'vue'
+import { ref, onMounted, onUnmounted, markRaw, inject, watchEffect } from 'vue'
 import Weibo from '../components/weibo.vue'
 import Bilibili from '../components/bilibili.vue'
 import Douyin from '../components/douyin.vue'
@@ -35,37 +37,79 @@ import HistoryToday from '../components/history-today.vue'
 import Weread from '../components/weread.vue'
 import NeteaseMusic from '../components/netease-music.vue'
 import DoubanMovic from '../components/douban-movic.vue'
+import { siteConfigs } from '../config/siteConfigs'
 
-// 组件配置
-const componentConfigs = [
-  { name: 'weibo', title: '微博', component: markRaw(Weibo) },
-  { name: 'douyin', title: '抖音', component: markRaw(Douyin) },
-  { name: 'bilibili', title: '哔哩哔哩', component: markRaw(Bilibili) },
-  { name: 'netease-music', title: '网易云音乐', component: markRaw(NeteaseMusic) },
-  { name: 'douban-movic', title: '豆瓣电影', component: markRaw(DoubanMovic) },
-  { name: 'baidu', title: '百度', component: markRaw(baidu) },
-  { name: 'jinritoutiao', title: '今日头条', component: markRaw(Jinritoutiao) },
-  { name: 'zhihu', title: '知乎', component: markRaw(Zhihu) },
-  { name: 'tenxun', title: '腾讯', component: markRaw(Tenxun) },
-  { name: 'baidutieba', title: '百度贴吧', component: markRaw(Baidutieba) },
-  { name: 'juejin', title: '掘金', component: markRaw(Juejin) },
-  { name: 'netease', title: '网易', component: markRaw(Netease) },
-  { name: 'lol', title: '英雄联盟', component: markRaw(Lol) },
-  { name: 'thepaper', title: '澎湃新闻', component: markRaw(Thepaper) },
-  { name: 'kuaishou', title: '快手', component: markRaw(Kuaishou) },
-  { name: 'history-today', title: '历史上的今天', component: markRaw(HistoryToday) },
-  { name: 'weread', title: '微信读书', component: markRaw(Weread) }
-]
+// 接收全局提供的站点可见性配置
+const siteVisibility = inject('siteVisibility')
+
+// 监听 siteVisibility 的变化，确保响应式更新
+watchEffect(() => {
+  if (siteVisibility && siteVisibility.value) {
+    console.log('Home.vue - siteVisibility changed:', siteVisibility.value)
+  }
+})
+
+const componentMap = {
+  weibo: markRaw(Weibo),
+  bilibili: markRaw(Bilibili),
+  douyin: markRaw(Douyin),
+  'jinritoutiao': markRaw(Jinritoutiao),
+  zhihu: markRaw(Zhihu),
+  baidu: markRaw(baidu),
+  baidutieba: markRaw(Baidutieba),
+  tenxun: markRaw(Tenxun),
+  juejin: markRaw(Juejin),
+  netease: markRaw(Netease),
+  lol: markRaw(Lol),
+  thepaper: markRaw(Thepaper),
+  kuaishou: markRaw(Kuaishou),
+  'douban-movic': markRaw(DoubanMovic),
+  'netease-music': markRaw(NeteaseMusic),
+  weread: markRaw(Weread),
+  'history-today': markRaw(HistoryToday)
+}
+
+// 组件配置（根据统一的 siteConfigs 生成）
+const componentConfigs = siteConfigs
+  .map(config => ({
+    ...config,
+    component: componentMap[config.name]
+  }))
+  // 过滤掉未在 Home 中注册组件的条目（防止出错）
+  .filter(item => item && item.component)
 
 // 响应式数据
 const lazyComponents = ref(
-  componentConfigs.map(config => ({
-    ...config,
-    isVisible: false
-  }))
+  componentConfigs.map(config => {
+    if (!config || !config.name) return null
+    return {
+      ...config,
+      isVisible: false
+    }
+  }).filter(item => item !== null)
 )
 
 const componentRefs = ref([])
+
+// 当前站点是否需要展示（布局面板控制）
+const isSiteEnabled = (name) => {
+  try {
+    if (!siteVisibility || !siteVisibility.value) {
+      console.log(`siteVisibility is not available, showing ${name}`)
+      return true
+    }
+    const vis = siteVisibility.value
+    // 默认显示，只有显式为 false 时隐藏
+    if (!Object.prototype.hasOwnProperty.call(vis, name)) return true
+    const result = !!vis[name]
+    console.log(`isSiteEnabled(${name}): ${result}, siteVisibility.value:`, vis)
+    return result
+  } catch (error) {
+    console.warn('siteVisibility error:', error)
+    return true // 出错时默认显示
+  }
+}
+
 let observer = null
 
 // 创建 Intersection Observer
@@ -109,6 +153,10 @@ const loadInitialComponents = () => {
 }
 
 onMounted(() => {
+  // 调试信息
+  console.log('lazyComponents:', lazyComponents.value)
+  console.log('componentConfigs:', componentConfigs)
+  
   // 加载初始组件
   loadInitialComponents()
   
@@ -137,10 +185,6 @@ onUnmounted(() => {
   justify-content: center;
   align-items: center;
   background-color: #f8fafc;
-}
-
-.component-wrapper {
-  // 组件包装器样式
 }
 
 .lazy-placeholder {

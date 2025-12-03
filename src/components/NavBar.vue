@@ -1,7 +1,29 @@
 <script setup>
-import { computed } from 'vue'
+import { ref, computed, inject } from 'vue'
 import { useDateTime } from '../utils/dateUtils'
 import { useRouter, useRoute } from 'vue-router'
+import { siteConfigs } from '../config/siteConfigs'
+
+// 动态导入图标
+const iconMap = {
+  '微博': new URL('../assets/微博.svg', import.meta.url).href,
+  '哔哩哔哩': new URL('../assets/哔哩哔哩.svg', import.meta.url).href,
+  '抖音': new URL('../assets/抖音.svg', import.meta.url).href,
+  '今日头条': new URL('../assets/今日头条.svg', import.meta.url).href,
+  '知乎': new URL('../assets/知乎.svg', import.meta.url).href,
+  '百度': new URL('../assets/百度.svg', import.meta.url).href,
+  '百度贴吧': new URL('../assets/百度贴吧.svg', import.meta.url).href,
+  '腾讯新闻': new URL('../assets/腾讯新闻.svg', import.meta.url).href,
+  '稀土掘金': new URL('../assets/juejin.svg', import.meta.url).href,
+  '网易新闻': new URL('../assets/网易.svg', import.meta.url).href,
+  '英雄联盟': new URL('../assets/英雄联盟.svg', import.meta.url).href,
+  '澎湃新闻': new URL('../assets/澎湃网.svg', import.meta.url).href,
+  '快手': new URL('../assets/快手.svg', import.meta.url).href,
+  '微信读书': new URL('../assets/微信读书.svg', import.meta.url).href,
+  '豆瓣电影': new URL('../assets/豆瓣网.svg', import.meta.url).href,
+  '网易云音乐': new URL('../assets/网易云音乐.svg', import.meta.url).href,
+  '百度百科': new URL('../assets/百度百科.svg', import.meta.url).href
+}
 
 // 使用时间工具函数
 const { currentTime, lunarInfo } = useDateTime(1000)
@@ -19,6 +41,34 @@ const goHome = () => {
 // 历史
 const goHistory = () => {
   router.push('/history')
+}
+
+// Locker 状态
+const isLockerOpen = ref(false)
+
+// 从根组件注入站点可见性配置（默认由 App.vue 初始化为全 true）
+const siteVisibility = inject('siteVisibility')
+
+// 切换站点可见性
+const toggleSiteVisibility = (siteName) => {
+  // 如果当前是显示状态（高亮），点击后隐藏
+  // 如果当前是隐藏状态（非高亮），点击后显示
+  const newState = !siteVisibility.value[siteName]
+  siteVisibility.value[siteName] = newState
+  console.log(`Toggled ${siteName}: ${newState ? 'show' : 'hide'}`)
+  console.log('Current siteVisibility:', siteVisibility.value)
+}
+
+// 全选/取消全选
+const toggleAllSites = (visible) => {
+  siteConfigs.forEach(config => {
+    siteVisibility.value[config.name] = visible
+  })
+}
+
+// 打开/关闭 locker
+const locker = () => {
+  isLockerOpen.value = !isLockerOpen.value
 }
 </script>
 
@@ -67,12 +117,25 @@ const goHistory = () => {
           </svg>
         </div>
       </div>
-      <div class="right">
+      <div class="right" @click="locker">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor">
           <path
             d="M5 8H19V5H5V8ZM14 19V10H5V19H14ZM16 19H19V10H16V19ZM4 3H20C20.5523 3 21 3.44772 21 4V20C21 20.5523 20.5523 21 20 21H4C3.44772 21 3 20.5523 3 20V4C3 3.44772 3.44772 3 4 3Z">
           </path>
         </svg>
+      </div>
+    </div>
+
+    <!-- Locker 面板 -->
+    <div v-if="isLockerOpen" class="locker-panel" @click.stop>
+      <div class="panel-content">
+        <div class="site-grid">
+          <div v-for="site in siteConfigs" :key="site.name" class="site-item"
+            :class="{ active: siteVisibility[site.name] }" @click="toggleSiteVisibility(site.name)">
+            <img :src="iconMap[site.title]" :alt="site.title" class="site-icon">
+            <span class="site-name">{{ site.title }}</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -176,6 +239,153 @@ const goHistory = () => {
     }
   }
 
+  // Locker 面板样式
+  .locker-panel {
+    position: fixed;
+    top: 70px;
+    right: 20px;
+    width: 400px;
+    max-height: 600px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    z-index: 2000;
+    overflow: hidden;
+    animation: slideIn 0.3s ease-out;
+
+    .panel-content {
+      padding: 20px;
+      max-height: 450px;
+      overflow-y: auto;
+
+      &::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 3px;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 3px;
+
+        &:hover {
+          background: #a8a8a8;
+        }
+      }
+
+      .site-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+
+        .site-item {
+          display: flex;
+          align-items: center;
+          padding: 10px 5px;
+          border: 1px solid #e0e0e0;
+          border-radius: 6px;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          background: white;
+          text-align: center;
+          gap: 10px;
+
+          &:hover {
+            border-color: #f1f1f2;
+            background: #f8f9ff;
+            transform: translateY(-1px);
+          }
+
+          &.active {
+            border-color: #f1f1f2;
+            background: #f1f1f2;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+
+            .site-name {
+              color: #45454c;
+            }
+          }
+
+          .site-icon {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+            transition: all 0.2s ease;
+          }
+
+          .site-name {
+            font-size: 12px;
+            color: #333;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 1.2;
+          }
+        }
+      }
+    }
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+
+  // 平板端响应式
+  @media (max-width: 1024px) {
+    .header {
+      padding: 0 20px;
+
+      .left {
+        .left_title {
+          .slogan {
+            display: none; // 隐藏标语
+          }
+        }
+      }
+
+      .middle {
+        .time {
+          font-size: 16px;
+        }
+
+        .lunar {
+          font-size: 12px;
+        }
+      }
+    }
+
+    .locker-panel {
+      width: 350px;
+      right: 10px;
+
+      .site-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  }
+
   // 移动端响应式
   @media (max-width: 768px) {
     .header {
@@ -260,6 +470,24 @@ const goHistory = () => {
         width: 24px;
         height: 24px;
       }
+
+      .locker-panel {
+        width: 320px;
+        right: 5px;
+
+        .site-grid {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 8px;
+
+          .site-item {
+            padding: 8px 10px;
+
+            .site-name {
+              font-size: 12px;
+            }
+          }
+        }
+      }
     }
   }
 
@@ -269,6 +497,18 @@ const goHistory = () => {
       .middle {
         .lunar {
           display: none; // 隐藏农历信息
+        }
+      }
+    }
+
+    .locker-panel {
+      width: 300px;
+
+      .site-grid {
+        grid-template-columns: repeat(2, 1fr);
+
+        .site-name {
+          font-size: 11px;
         }
       }
     }

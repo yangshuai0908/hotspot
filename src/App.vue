@@ -1,7 +1,17 @@
 <script setup>
+import { ref, provide } from 'vue'
 import NavBar from './components/NavBar.vue'
 import Footer from './components/Footer.vue'
+import { siteConfigs } from './config/siteConfigs'
 
+// 全局站点可见性（默认全部显示）
+const siteVisibility = ref({})
+siteConfigs.forEach(config => {
+  siteVisibility.value[config.name] = true
+})
+
+// 提供给所有子组件使用（包括 NavBar 和 Home）
+provide('siteVisibility', siteVisibility)
 </script>
 
 <template>
