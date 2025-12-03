@@ -29,15 +29,24 @@
             <div class="skeleton-arrow"></div>
           </div>
         </div>
+
+        <!-- 错误提示 -->
+        <div v-else-if="hasError || (!isLoading && WeiBoList.length === 0)" class="error-container">
+          <div class="error-message">
+            抱歉,可能服务器遇到问题了,请稍后重试,或者打开右上角设置关闭热榜显示!😅
+          </div>
+        </div>
         
         <!-- 正常内容 -->
-        <div v-else v-for="(item, index) in WeiBoList" :key="item.id" class="hot-list-item" :class="{ 'top-rank': index < 3, 'has-label': item.label }">
-          <div class="rank-number">{{ item.label || (index + 1) }}</div>
-          <div class="item-info">
-            <h4 class="item-title">{{ item.title }}</h4>
+        <template v-else>
+          <div v-for="(item, index) in WeiBoList" :key="item.id" class="hot-list-item" :class="{ 'top-rank': index < 3, 'has-label': item.label }">
+            <div class="rank-number">{{ item.label || (index + 1) }}</div>
+            <div class="item-info">
+              <h4 class="item-title">{{ item.title }}</h4>
+            </div>
+            <div class="item-arrow">›</div>
           </div>
-          <div class="item-arrow">›</div>
-        </div>
+        </template>
       </div>
       <div class="hot_footer">
         <div class="update-info">
@@ -64,24 +73,35 @@ import { typeAPI } from '../api/WeiBo'
 const WeiBoList = ref([]) // 获取热搜榜数据
 const timedata = ref('') // 更新时间
 const isLoading = ref(false) // 加载状态
+const hasError = ref(false) // 错误状态
 
 const getWeiBoHotList = async () => {
   if (isLoading.value) return // 防止重复点击
   
   isLoading.value = true
+  hasError.value = false // 重置错误状态
   
   try {
     const res = await typeAPI.getHotListByType('zhihu')
     console.log(res);
     
-    // 计算更新时间，传入时间戳
-    const updateTime = calculateUpdateTime(res.timestamp)
-    timedata.value = updateTime
+    // 检查返回的数据是否有效
+    if (res && res.data && Array.isArray(res.data) && res.data.length > 0) {
+      // 计算更新时间，传入时间戳
+      const updateTime = calculateUpdateTime(res.timestamp)
+      timedata.value = updateTime
 
-    // name.value = res.api.name
-    WeiBoList.value = res.data
+      WeiBoList.value = res.data
+      hasError.value = false // 成功时清除错误状态
+    } else {
+      // 数据为空或格式不正确，视为错误
+      hasError.value = true
+      WeiBoList.value = []
+    }
   } catch (error) {
     console.error('获取数据失败:', error)
+    hasError.value = true // 设置错误状态
+    WeiBoList.value = [] // 清空列表
   } finally {
     isLoading.value = false
   }
@@ -355,6 +375,23 @@ onMounted(() => {
         }
         100% {
           background-position: -200% 0;
+        }
+      }
+
+      // 错误提示样式
+      .error-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        padding: 20px;
+        text-align: center;
+
+        .error-message {
+          font-size: 14px;
+          color: #666;
+          line-height: 1.6;
+          white-space: pre-line;
         }
       }
     }
