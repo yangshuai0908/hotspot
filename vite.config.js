@@ -10,6 +10,11 @@ export default defineConfig({
         target: 'https://hot.baiwumm.com/api/',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, '')
+      },
+      '/xzdx-api': {
+        target: 'https://xzdx.top/api/',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/xzdx-api/, '')
       }
     }
   }

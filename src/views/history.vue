@@ -4,7 +4,6 @@
       <!-- 头部标题 -->
       <div class="history-header">
         <h1>历史上的今天</h1>
-        <div class="update-info">{{ timedata }}</div>
       </div>
 
       <!-- 海报展示区域 -->
@@ -68,7 +67,6 @@
 
 <script setup>
 import { onMounted, ref, computed, nextTick } from 'vue'
-import { typeAPI } from '../api/WeiBo'
 import { gsap } from 'gsap'
 
 const history = ref([])
@@ -80,9 +78,14 @@ const currentItem = computed(() => {
 })
 
 const getHistory = async () => {
-    const res = await typeAPI.getHotListByType('history')
-    history.value = res.data
-    currentIndex.value = 0 // 重置到第一页
+    try {
+        const response = await fetch('/xzdx-api/tophub?type=history')
+        const res = await response.json()
+        history.value = res.data
+        currentIndex.value = 0 // 重置到第一页
+    } catch (error) {
+        console.error('获取历史数据失败:', error)
+    }
 }
 
 // 翻页功能
@@ -148,22 +151,22 @@ const initAnimations = () => {
     }
   )
 
-  // 更新时间动画
-  gsap.fromTo('.update-info', 
-    { 
-      opacity: 0, 
-      y: -50,
-      skewX: 20
-    },
-    { 
-      opacity: 1, 
-      y: 0,
-      skewX: 0,
-      duration: 0.8, 
-      delay: 0.6,
-      ease: 'power2.out'
-    }
-  )
+  // 更新时间动画 - 暂时注释掉，因为模板中没有对应元素
+  // gsap.fromTo('.update-info', 
+  //   { 
+  //     opacity: 0, 
+  //     y: -50,
+  //     skewX: 20
+  //   },
+  //   { 
+  //     opacity: 1, 
+  //     y: 0,
+  //     skewX: 0,
+  //     duration: 0.8, 
+  //     delay: 0.6,
+  //     ease: 'power2.out'
+  //   }
+  // )
 
   // 海报容器动画
   gsap.fromTo('.poster-wrapper', 
@@ -240,13 +243,13 @@ const initAnimations = () => {
     }
   )
 
-  // 背景动画
-  gsap.to('.history::before', {
-    rotation: 360,
-    duration: 60,
-    repeat: -1,
-    ease: 'none'
-  })
+  // 背景动画 - 暂时注释掉，因为CSS中没有定义::before伪元素
+  // gsap.to('.history::before', {
+  //   rotation: 360,
+  //   duration: 60,
+  //   repeat: -1,
+  //   ease: 'none'
+  // })
 
   // 海报内容动画
   gsap.fromTo('.poster-content', {
