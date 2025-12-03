@@ -41,7 +41,7 @@
         <template v-else>
           <div v-for="(item, index) in WeiBoList" :key="item.id" class="hot-list-item" :class="{ 'top-rank': index < 3, 'has-label': item.label }">
             <div class="rank-number">{{ item.label || (index + 1) }}</div>
-            <div class="item-info">
+            <div class="item-info"@click="goDetails(item)">
               <h4 class="item-title">{{ item.title }}</h4>
             </div>
             <div class="item-arrow">›</div>
@@ -83,7 +83,7 @@ const getWeiBoHotList = async () => {
   
   try {
     const res = await typeAPI.getHotListByType('thepaper')
-    console.log(res);
+    // console.log(res);
     
     // 检查返回的数据是否有效
     if (res && res.data && Array.isArray(res.data) && res.data.length > 0) {
@@ -153,7 +153,10 @@ const calculateUpdateTime = (date, time, timestamp) => {
     return '刚刚更新'
   }
 }
-
+// 获取热搜榜数据详情
+const goDetails = (item) => {
+    window.open(item.mobileUrl)
+}
 
 onMounted(() => {
   getWeiBoHotList()

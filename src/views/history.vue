@@ -11,12 +11,12 @@
         <!-- 左翻页按钮 -->
         <button class="nav-btn prev-btn" @click="prevPoster" :disabled="currentIndex === 0">
           <svg viewBox="0 0 24 24" width="24" height="24">
-            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" fill="currentColor"/>
+            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" fill="currentColor" />
           </svg>
         </button>
 
         <!-- 海报内容 -->
-        <div class="poster-wrapper">
+        <div class="poster-wrapper" @click="goDetails(currentItem)">
           <div class="poster" v-if="currentItem">
             <div class="poster-background">
               <div class="poster-content">
@@ -35,7 +35,7 @@
         <!-- 右翻页按钮 -->
         <button class="nav-btn next-btn" @click="nextPoster" :disabled="currentIndex >= history.length - 1">
           <svg viewBox="0 0 24 24" width="24" height="24">
-            <path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z" fill="currentColor"/>
+            <path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z" fill="currentColor" />
           </svg>
         </button>
       </div>
@@ -44,20 +44,17 @@
       <div class="pagination">
         <span class="page-info">{{ currentIndex + 1 }} / {{ history.length }}</span>
         <div class="dots">
-          <span 
-            v-for="(item, index) in history" 
-            :key="index"
-            class="dot"
-            :class="{ active: index === currentIndex }"
-            @click="goToPoster(index)"
-          ></span>
+          <span v-for="(item, index) in history" :key="index" class="dot" :class="{ active: index === currentIndex }"
+            @click="goToPoster(index)"></span>
         </div>
       </div>
 
       <!-- 刷新按钮 -->
       <button class="refresh-btn" @click="getHistory">
         <svg viewBox="0 0 24 24" width="20" height="20">
-          <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" fill="currentColor"/>
+          <path
+            d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
+            fill="currentColor" />
         </svg>
         刷新
       </button>
@@ -78,16 +75,19 @@ const currentItem = computed(() => {
 })
 
 const getHistory = async () => {
-    try {
-        const response = await fetch('/xzdx-api/tophub?type=history')
-        const res = await response.json()
-        history.value = res.data
-        currentIndex.value = 0 // 重置到第一页
-    } catch (error) {
-        console.error('获取历史数据失败:', error)
-    }
+  try {
+    const response = await fetch('/xzdx-api/tophub?type=history')
+    const res = await response.json()
+    history.value = res.data
+    currentIndex.value = 0 // 重置到第一页
+  } catch (error) {
+    console.error('获取历史数据失败:', error)
+  }
 }
 
+const goDetails = (item) => {
+  window.open(item.url)
+}
 // 翻页功能
 const prevPoster = () => {
   if (currentIndex.value > 0) {
@@ -127,25 +127,25 @@ const formatDate = (dateStr) => {
 // GSAP 动画初始化
 const initAnimations = () => {
   // 页面入场动画
-  gsap.fromTo('.history', 
+  gsap.fromTo('.history',
     { opacity: 0 },
     { opacity: 1, duration: 1, ease: 'power2.inOut' }
   )
 
   // 标题动画
-  gsap.fromTo('.history-header h1', 
-    { 
-      opacity: 0, 
+  gsap.fromTo('.history-header h1',
+    {
+      opacity: 0,
       y: -100,
       scale: 0.8,
       rotationX: 90
     },
-    { 
-      opacity: 1, 
+    {
+      opacity: 1,
       y: 0,
       scale: 1,
       rotationX: 0,
-      duration: 1.2, 
+      duration: 1.2,
       delay: 0.3,
       ease: 'back.out(1.7)'
     }
@@ -169,38 +169,38 @@ const initAnimations = () => {
   // )
 
   // 海报容器动画
-  gsap.fromTo('.poster-wrapper', 
-    { 
-      opacity: 0, 
+  gsap.fromTo('.poster-wrapper',
+    {
+      opacity: 0,
       scale: 0.3,
       rotationY: 180,
       z: -500
     },
-    { 
-      opacity: 1, 
+    {
+      opacity: 1,
       scale: 1,
       rotationY: 0,
       z: 0,
-      duration: 1.5, 
+      duration: 1.5,
       delay: 0.8,
       ease: 'power3.inOut'
     }
   )
 
   // 左右按钮动画
-  gsap.fromTo('.nav-btn', 
-    { 
-      opacity: 0, 
+  gsap.fromTo('.nav-btn',
+    {
+      opacity: 0,
       x: (index) => index === 0 ? -200 : 200,
       rotation: (index) => index === 0 ? -360 : 360,
       scale: 0
     },
-    { 
-      opacity: 1, 
+    {
+      opacity: 1,
       x: 0,
       rotation: 0,
       scale: 1,
-      duration: 0.8, 
+      duration: 0.8,
       delay: 1.2,
       stagger: 0.2,
       ease: 'back.out(1.7)'
@@ -208,36 +208,36 @@ const initAnimations = () => {
   )
 
   // 分页器动画
-  gsap.fromTo('.pagination', 
-    { 
-      opacity: 0, 
+  gsap.fromTo('.pagination',
+    {
+      opacity: 0,
       y: 100,
       scale: 0.5
     },
-    { 
-      opacity: 1, 
+    {
+      opacity: 1,
       y: 0,
       scale: 1,
-      duration: 0.8, 
+      duration: 0.8,
       delay: 1.5,
       ease: 'elastic.out(1, 0.5)'
     }
   )
 
   // 刷新按钮动画
-  gsap.fromTo('.refresh-btn', 
-    { 
-      opacity: 0, 
+  gsap.fromTo('.refresh-btn',
+    {
+      opacity: 0,
       y: 100,
       scale: 0.3,
       rotation: 180
     },
-    { 
-      opacity: 1, 
+    {
+      opacity: 1,
       y: 0,
       scale: 1,
       rotation: 0,
-      duration: 0.8, 
+      duration: 0.8,
       delay: 1.8,
       ease: 'back.out(1.7)'
     }
@@ -280,7 +280,7 @@ const animatePosterChange = (direction) => {
   if (!poster) return
 
   const tl = gsap.timeline()
-  
+
   if (direction === 'next') {
     tl.to(poster, {
       x: -150,
@@ -290,22 +290,22 @@ const animatePosterChange = (direction) => {
       duration: 0.5,
       ease: 'power2.in'
     })
-    .fromTo(poster, 
-      {
-        x: 150,
-        rotationY: 90,
-        opacity: 0,
-        scale: 0.8
-      },
-      {
-        x: 0,
-        rotationY: 0,
-        opacity: 1,
-        scale: 1,
-        duration: 0.5,
-        ease: 'back.out(1.7)'
-      }
-    )
+      .fromTo(poster,
+        {
+          x: 150,
+          rotationY: 90,
+          opacity: 0,
+          scale: 0.8
+        },
+        {
+          x: 0,
+          rotationY: 0,
+          opacity: 1,
+          scale: 1,
+          duration: 0.5,
+          ease: 'back.out(1.7)'
+        }
+      )
   } else {
     tl.to(poster, {
       x: 150,
@@ -315,22 +315,22 @@ const animatePosterChange = (direction) => {
       duration: 0.5,
       ease: 'power2.in'
     })
-    .fromTo(poster, 
-      {
-        x: -150,
-        rotationY: -90,
-        opacity: 0,
-        scale: 0.8
-      },
-      {
-        x: 0,
-        rotationY: 0,
-        opacity: 1,
-        scale: 1,
-        duration: 0.5,
-        ease: 'back.out(1.7)'
-      }
-    )
+      .fromTo(poster,
+        {
+          x: -150,
+          rotationY: -90,
+          opacity: 0,
+          scale: 0.8
+        },
+        {
+          x: 0,
+          rotationY: 0,
+          opacity: 1,
+          scale: 1,
+          duration: 0.5,
+          ease: 'back.out(1.7)'
+        }
+      )
   }
 
   // 添加按钮反馈动画
@@ -356,7 +356,7 @@ const setupButtonAnimations = () => {
         duration: 0.4,
         ease: 'back.out(1.7)'
       })
-      
+
       // 发光效果
       gsap.to(btn, {
         boxShadow: '0 0 30px rgba(102, 126, 234, 0.8)',
@@ -364,7 +364,7 @@ const setupButtonAnimations = () => {
         ease: 'power2.out'
       })
     })
-    
+
     btn.addEventListener('mouseleave', () => {
       gsap.to(btn, {
         scale: 1,
@@ -372,7 +372,7 @@ const setupButtonAnimations = () => {
         duration: 0.3,
         ease: 'power2.out'
       })
-      
+
       gsap.to(btn, {
         boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
         duration: 0.3,
@@ -392,14 +392,14 @@ const setupButtonAnimations = () => {
         duration: 0.4,
         ease: 'back.out(1.7)'
       })
-      
+
       // 旋转图标
       gsap.to(refreshBtn.querySelector('svg'), {
         rotation: 720,
         duration: 0.8,
         ease: 'power2.inOut'
       })
-      
+
       // 发光效果
       gsap.to(refreshBtn, {
         boxShadow: '0 0 40px rgba(102, 126, 234, 0.6)',
@@ -407,7 +407,7 @@ const setupButtonAnimations = () => {
         ease: 'power2.out'
       })
     })
-    
+
     refreshBtn.addEventListener('mouseleave', () => {
       gsap.to(refreshBtn, {
         scale: 1,
@@ -416,7 +416,7 @@ const setupButtonAnimations = () => {
         duration: 0.3,
         ease: 'power2.out'
       })
-      
+
       gsap.to(refreshBtn, {
         boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
         duration: 0.3,
@@ -436,7 +436,7 @@ const setupButtonAnimations = () => {
           duration: 0.3,
           ease: 'back.out(1.7)'
         })
-        
+
         // 发光效果
         gsap.to(dot, {
           boxShadow: '0 0 20px rgba(102, 126, 234, 0.8)',
@@ -445,7 +445,7 @@ const setupButtonAnimations = () => {
         })
       }
     })
-    
+
     dot.addEventListener('mouseleave', () => {
       if (!dot.classList.contains('active')) {
         gsap.to(dot, {
@@ -454,7 +454,7 @@ const setupButtonAnimations = () => {
           duration: 0.3,
           ease: 'power2.out'
         })
-        
+
         gsap.to(dot, {
           boxShadow: 'none',
           duration: 0.2,
@@ -475,7 +475,7 @@ const setupButtonAnimations = () => {
         ease: 'power2.out'
       })
     })
-    
+
     poster.addEventListener('mouseleave', () => {
       gsap.to(poster, {
         scale: 1,
@@ -516,7 +516,7 @@ onMounted(async () => {
     left: 0;
     right: 0;
     bottom: 0;
-    background: 
+    background:
       radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
       radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
       radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%);
@@ -540,7 +540,7 @@ onMounted(async () => {
 
   .history-header {
     margin-bottom: 60px;
-    
+
     h1 {
       font-size: 3.5rem;
       margin: 0 0 15px 0;
@@ -581,13 +581,13 @@ onMounted(async () => {
     .poster-background {
       width: 100%;
       height: 100%;
-      background: linear-gradient(135deg, 
-        rgba(255, 255, 255, 0.1) 0%,
-        rgba(255, 255, 255, 0.05) 50%,
-        rgba(255, 255, 255, 0.02) 100%);
+      background: linear-gradient(135deg,
+          rgba(255, 255, 255, 0.1) 0%,
+          rgba(255, 255, 255, 0.05) 50%,
+          rgba(255, 255, 255, 0.02) 100%);
       border-radius: 30px;
       border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 
+      box-shadow:
         0 30px 60px rgba(0, 0, 0, 0.4),
         inset 0 1px 0 rgba(255, 255, 255, 0.1);
       backdrop-filter: blur(20px);
@@ -604,15 +604,13 @@ onMounted(async () => {
         left: -100%;
         width: 300%;
         height: 300%;
-        background: conic-gradient(
-          from 0deg,
-          transparent 0deg,
-          rgba(102, 126, 234, 0.1) 60deg,
-          rgba(240, 147, 251, 0.1) 120deg,
-          rgba(245, 87, 108, 0.1) 180deg,
-          rgba(102, 126, 234, 0.1) 240deg,
-          transparent 360deg
-        );
+        background: conic-gradient(from 0deg,
+            transparent 0deg,
+            rgba(102, 126, 234, 0.1) 60deg,
+            rgba(240, 147, 251, 0.1) 120deg,
+            rgba(245, 87, 108, 0.1) 180deg,
+            rgba(102, 126, 234, 0.1) 240deg,
+            transparent 360deg);
         animation: rotate 10s linear infinite;
       }
 
@@ -620,9 +618,9 @@ onMounted(async () => {
         content: '';
         position: absolute;
         inset: 2px;
-        background: linear-gradient(135deg, 
-          rgba(15, 15, 30, 0.9) 0%,
-          rgba(25, 25, 45, 0.8) 100%);
+        background: linear-gradient(135deg,
+            rgba(15, 15, 30, 0.9) 0%,
+            rgba(25, 25, 45, 0.8) 100%);
         border-radius: 28px;
         z-index: 1;
       }
@@ -691,9 +689,9 @@ onMounted(async () => {
   .empty-poster {
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, 
-      rgba(255, 255, 255, 0.05) 0%,
-      rgba(255, 255, 255, 0.02) 100%);
+    background: linear-gradient(135deg,
+        rgba(255, 255, 255, 0.05) 0%,
+        rgba(255, 255, 255, 0.02) 100%);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 30px;
     display: flex;
@@ -713,27 +711,27 @@ onMounted(async () => {
     height: 60px;
     border-radius: 50%;
     border: 1px solid rgba(255, 255, 255, 0.1);
-    background: linear-gradient(135deg, 
-      rgba(255, 255, 255, 0.1) 0%,
-      rgba(255, 255, 255, 0.05) 100%);
+    background: linear-gradient(135deg,
+        rgba(255, 255, 255, 0.1) 0%,
+        rgba(255, 255, 255, 0.05) 100%);
     color: rgba(255, 255, 255, 0.9);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 
+    box-shadow:
       0 8px 32px rgba(0, 0, 0, 0.3),
       inset 0 1px 0 rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
     z-index: 10;
 
     &:hover:not(:disabled) {
-      background: linear-gradient(135deg, 
-        rgba(255, 255, 255, 0.2) 0%,
-        rgba(255, 255, 255, 0.1) 100%);
+      background: linear-gradient(135deg,
+          rgba(255, 255, 255, 0.2) 0%,
+          rgba(255, 255, 255, 0.1) 100%);
       transform: scale(1.1) translateY(-2px);
-      box-shadow: 
+      box-shadow:
         0 12px 40px rgba(0, 0, 0, 0.4),
         inset 0 1px 0 rgba(255, 255, 255, 0.2);
       border-color: rgba(255, 255, 255, 0.2);
@@ -811,9 +809,9 @@ onMounted(async () => {
     padding: 16px 32px;
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 30px;
-    background: linear-gradient(135deg, 
-      rgba(255, 255, 255, 0.1) 0%,
-      rgba(255, 255, 255, 0.05) 100%);
+    background: linear-gradient(135deg,
+        rgba(255, 255, 255, 0.1) 0%,
+        rgba(255, 255, 255, 0.05) 100%);
     color: rgba(255, 255, 255, 0.9);
     font-size: 1.1rem;
     font-weight: 700;
@@ -823,18 +821,18 @@ onMounted(async () => {
     gap: 10px;
     margin: 40px auto 0;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 
+    box-shadow:
       0 8px 32px rgba(0, 0, 0, 0.3),
       inset 0 1px 0 rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
     letter-spacing: 0.5px;
 
     &:hover {
-      background: linear-gradient(135deg, 
-        rgba(255, 255, 255, 0.2) 0%,
-        rgba(255, 255, 255, 0.1) 100%);
+      background: linear-gradient(135deg,
+          rgba(255, 255, 255, 0.2) 0%,
+          rgba(255, 255, 255, 0.1) 100%);
       transform: translateY(-3px);
-      box-shadow: 
+      box-shadow:
         0 12px 40px rgba(0, 0, 0, 0.4),
         inset 0 1px 0 rgba(255, 255, 255, 0.2);
       border-color: rgba(255, 255, 255, 0.2);
@@ -855,32 +853,77 @@ onMounted(async () => {
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  25% { transform: translateY(-20px) rotate(1deg); }
-  50% { transform: translateY(-10px) rotate(-1deg); }
-  75% { transform: translateY(-15px) rotate(0.5deg); }
+
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  25% {
+    transform: translateY(-20px) rotate(1deg);
+  }
+
+  50% {
+    transform: translateY(-10px) rotate(-1deg);
+  }
+
+  75% {
+    transform: translateY(-15px) rotate(0.5deg);
+  }
 }
 
 @keyframes rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes posterFloat {
-  0%, 100% { transform: translateY(0) rotateX(0) rotateY(0); }
-  25% { transform: translateY(-10px) rotateX(2deg) rotateY(1deg); }
-  50% { transform: translateY(-5px) rotateX(-1deg) rotateY(-1deg); }
-  75% { transform: translateY(-8px) rotateX(1deg) rotateY(0.5deg); }
+
+  0%,
+  100% {
+    transform: translateY(0) rotateX(0) rotateY(0);
+  }
+
+  25% {
+    transform: translateY(-10px) rotateX(2deg) rotateY(1deg);
+  }
+
+  50% {
+    transform: translateY(-5px) rotateX(-1deg) rotateY(-1deg);
+  }
+
+  75% {
+    transform: translateY(-8px) rotateX(1deg) rotateY(0.5deg);
+  }
 }
 
 @keyframes glow {
-  0% { filter: brightness(1) drop-shadow(0 0 20px rgba(102, 126, 234, 0.5)); }
-  100% { filter: brightness(1.2) drop-shadow(0 0 30px rgba(240, 147, 251, 0.7)); }
+  0% {
+    filter: brightness(1) drop-shadow(0 0 20px rgba(102, 126, 234, 0.5));
+  }
+
+  100% {
+    filter: brightness(1.2) drop-shadow(0 0 30px rgba(240, 147, 251, 0.7));
+  }
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.6; transform: scale(0.95); }
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.6;
+    transform: scale(0.95);
+  }
 }
 
 // 响应式设计

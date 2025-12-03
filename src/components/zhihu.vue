@@ -36,12 +36,13 @@
             抱歉,可能服务器遇到问题了,请稍后重试,或者打开右上角设置关闭热榜显示!😅
           </div>
         </div>
-        
+
         <!-- 正常内容 -->
         <template v-else>
-          <div v-for="(item, index) in WeiBoList" :key="item.id" class="hot-list-item" :class="{ 'top-rank': index < 3, 'has-label': item.label }">
+          <div v-for="(item, index) in WeiBoList" :key="item.id" class="hot-list-item"
+            :class="{ 'top-rank': index < 3, 'has-label': item.label }">
             <div class="rank-number">{{ item.label || (index + 1) }}</div>
-            <div class="item-info">
+            <div class="item-info" @click="goDetails(item)">
               <h4 class="item-title">{{ item.title }}</h4>
             </div>
             <div class="item-arrow">›</div>
@@ -77,14 +78,14 @@ const hasError = ref(false) // 错误状态
 
 const getWeiBoHotList = async () => {
   if (isLoading.value) return // 防止重复点击
-  
+
   isLoading.value = true
   hasError.value = false // 重置错误状态
-  
+
   try {
     const res = await typeAPI.getHotListByType('zhihu')
-    console.log(res);
-    
+    // console.log(res);
+
     // 检查返回的数据是否有效
     if (res && res.data && Array.isArray(res.data) && res.data.length > 0) {
       // 计算更新时间，传入时间戳
@@ -110,7 +111,7 @@ const getWeiBoHotList = async () => {
 // 计算更新时间的函数
 const calculateUpdateTime = (date, time, timestamp) => {
   if (!date || !time) return '刚刚更新'
-  
+
   try {
     // 优先使用时间戳（更准确）
     let apiTime
@@ -123,16 +124,16 @@ const calculateUpdateTime = (date, time, timestamp) => {
       const dateTimeStr = `${date} ${time}`
       apiTime = new Date(dateTimeStr.replace(/\//g, '-'))
     }
-    
+
     // 获取当前时间
     const now = new Date()
-    
+
     // 计算时间差（毫秒）
     const diffMs = now - apiTime
     const diffMinutes = Math.floor(diffMs / (1000 * 60))
     const diffHours = Math.floor(diffMinutes / 60)
     const diffDays = Math.floor(diffHours / 24)
-    
+
     // 根据时间差返回相对时间
     if (diffMinutes < 1) {
       return '刚刚更新'
@@ -153,7 +154,10 @@ const calculateUpdateTime = (date, time, timestamp) => {
     return '刚刚更新'
   }
 }
-
+// 获取热搜榜数据详情
+const goDetails = (item) => {
+  window.open(item.mobileUrl)
+}
 
 onMounted(() => {
   getWeiBoHotList()
@@ -269,20 +273,20 @@ onMounted(() => {
           color: white;
           box-shadow: 0 2px 8px rgba(234, 68, 77, 0.3);
         }
-        
+
         // 前三名特殊样式（仅当没有label时）
         &:nth-child(1):not(.has-label) .rank-number {
           background-color: #ea444d;
           color: white;
           box-shadow: 0 2px 8px rgba(234, 68, 77, 0.3);
         }
-        
+
         &:nth-child(2):not(.has-label) .rank-number {
           background-color: #ed702d;
           color: white;
           box-shadow: 0 2px 8px rgba(237, 112, 45, 0.3);
         }
-        
+
         &:nth-child(3):not(.has-label) .rank-number {
           background-color: #eead3f;
           color: white;
@@ -324,7 +328,7 @@ onMounted(() => {
       // 骨架屏样式
       .skeleton-container {
         padding: 8px 0;
-        
+
         .skeleton-item {
           display: flex;
           align-items: center;
@@ -332,7 +336,7 @@ onMounted(() => {
           margin: 4px 12px;
           border-radius: 8px;
           background-color: #fafafa;
-          
+
           .skeleton-rank {
             width: 24px;
             height: 24px;
@@ -342,11 +346,11 @@ onMounted(() => {
             animation: skeleton-loading 1.5s infinite;
             margin-right: 12px;
           }
-          
+
           .skeleton-content {
             flex: 1;
             min-width: 0;
-            
+
             .skeleton-title {
               height: 16px;
               background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
@@ -356,7 +360,7 @@ onMounted(() => {
               width: 80%;
             }
           }
-          
+
           .skeleton-arrow {
             width: 12px;
             height: 16px;
@@ -368,11 +372,12 @@ onMounted(() => {
           }
         }
       }
-      
+
       @keyframes skeleton-loading {
         0% {
           background-position: 200% 0;
         }
+
         100% {
           background-position: -200% 0;
         }
@@ -429,21 +434,22 @@ onMounted(() => {
             transform: rotate(180deg);
           }
         }
-        
+
         &.loading .icon {
           animation: spin 1s linear infinite;
           cursor: not-allowed;
-          
+
           &:hover {
             transform: none;
           }
         }
       }
-      
+
       @keyframes spin {
         from {
           transform: rotate(0deg);
         }
+
         to {
           transform: rotate(360deg);
         }

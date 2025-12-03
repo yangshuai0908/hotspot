@@ -45,7 +45,7 @@ const siteVisibility = inject('siteVisibility')
 // 监听 siteVisibility 的变化，确保响应式更新
 watchEffect(() => {
   if (siteVisibility && siteVisibility.value) {
-    console.log('Home.vue - siteVisibility changed:', siteVisibility.value)
+    // console.log('Home.vue - siteVisibility changed:', siteVisibility.value)
   }
 })
 
@@ -102,7 +102,7 @@ const isSiteEnabled = (name) => {
     // 默认显示，只有显式为 false 时隐藏
     if (!Object.prototype.hasOwnProperty.call(vis, name)) return true
     const result = !!vis[name]
-    console.log(`isSiteEnabled(${name}): ${result}, siteVisibility.value:`, vis)
+    // console.log(`isSiteEnabled(${name}): ${result}, siteVisibility.value:`, vis)
     return result
   } catch (error) {
     console.warn('siteVisibility error:', error)
@@ -154,8 +154,8 @@ const loadInitialComponents = () => {
 
 onMounted(() => {
   // 调试信息
-  console.log('lazyComponents:', lazyComponents.value)
-  console.log('componentConfigs:', componentConfigs)
+  // console.log('lazyComponents:', lazyComponents.value)
+  // console.log('componentConfigs:', componentConfigs)
   
   // 加载初始组件
   loadInitialComponents()
