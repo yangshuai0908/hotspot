@@ -3,15 +3,7 @@
         <div class="hot_item">
             <div class="hot_header">
                 <div class="header_title">
-                    <svg t="1764726197521" class="icon" viewBox="0 0 1024 1024" version="1.1"
-                        xmlns="http://www.w3.org/2000/svg" p-id="2633" width="25" height="25">
-                        <path
-                            d="M750.35136 541.056h-149.52448v214.46656h115.52256c35.456 0 34.00192-41.12384 34.00192-41.12384v-173.34272z"
-                            fill="#2482FD" p-id="2634"></path>
-                        <path
-                            d="M849.92 51.2H174.08c-67.8656 0-122.88 55.0144-122.88 122.88v675.84c0 67.8656 55.0144 122.88 122.88 122.88h675.84c67.8656 0 122.88-55.0144 122.88-122.88V174.08c0-67.8656-55.0144-122.88-122.88-122.88zM491.2128 819.2c-97.59744 0-141.59872-73.25184-141.59872-73.25184-51.85024 80.44032-141.5936 73.07264-141.5936 73.07264v-63.50336c108.72832 0 108.77952-107.22816 108.77952-107.22816V317.4656h65.62304v330.82368c0 102.90688 108.78464 107.22816 108.78464 107.22816V819.2z m0-608.58368v447.73376H425.58976V273.38752h-111.1552c-41.52832 0-40.7808 33.13664-40.7808 33.13664v351.81568H208.0256V306.52928c0-98.08384 106.40384-96.64 106.40384-96.64H491.2128v0.72704z m324.7616 503.77728c0 103.91552-99.62496 104.63232-99.62496 104.63232H535.20384V477.55776h60.5184V204.8h65.62304v67.85536h154.53184v67.7376h-154.53184v137.15968h154.62912v236.84096z"
-                            fill="#2482FD" p-id="2635"></path>
-                    </svg>
+                    <img src="../assets/百度贴吧.svg" alt="">
                     <span>
                         百度贴吧
                     </span>
@@ -27,7 +19,19 @@
                 </div>
             </div>
             <div class="hot-content">
-                <div v-for="(item, index) in WeiBoList" :key="item.id" class="hot-list-item"
+                <!-- 骨架屏 -->
+                <div v-if="isLoading" class="skeleton-container">
+                    <div v-for="n in 10" :key="n" class="skeleton-item">
+                        <div class="skeleton-rank"></div>
+                        <div class="skeleton-content">
+                            <div class="skeleton-title"></div>
+                        </div>
+                        <div class="skeleton-arrow"></div>
+                    </div>
+                </div>
+
+                <!-- 正常内容 -->
+                <div v-else v-for="(item, index) in WeiBoList" :key="item.id" class="hot-list-item"
                     :class="{ 'top-rank': index < 3, 'has-label': item.label }">
                     <div class="rank-number">{{ item.label || (index + 1) }}</div>
                     <div class="item-info">
@@ -295,6 +299,64 @@ onMounted(() => {
                 &:hover .item-arrow {
                     transform: translateX(2px);
                     color: #ff6b6b;
+                }
+            }
+
+            // 骨架屏样式
+            .skeleton-container {
+                padding: 8px 0;
+
+                .skeleton-item {
+                    display: flex;
+                    align-items: center;
+                    padding: 12px 16px;
+                    margin: 4px 12px;
+                    border-radius: 8px;
+                    background-color: #fafafa;
+
+                    .skeleton-rank {
+                        width: 24px;
+                        height: 24px;
+                        border-radius: 50%;
+                        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+                        background-size: 200% 100%;
+                        animation: skeleton-loading 1.5s infinite;
+                        margin-right: 12px;
+                    }
+
+                    .skeleton-content {
+                        flex: 1;
+                        min-width: 0;
+
+                        .skeleton-title {
+                            height: 16px;
+                            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+                            background-size: 200% 100%;
+                            animation: skeleton-loading 1.5s infinite;
+                            border-radius: 4px;
+                            width: 80%;
+                        }
+                    }
+
+                    .skeleton-arrow {
+                        width: 12px;
+                        height: 16px;
+                        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+                        background-size: 200% 100%;
+                        animation: skeleton-loading 1.5s infinite;
+                        border-radius: 2px;
+                        margin-left: 8px;
+                    }
+                }
+            }
+
+            @keyframes skeleton-loading {
+                0% {
+                    background-position: 200% 0;
+                }
+
+                100% {
+                    background-position: -200% 0;
                 }
             }
         }

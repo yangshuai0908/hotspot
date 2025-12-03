@@ -30,7 +30,19 @@
         </div>
       </div>
       <div class="hot-content">
-        <div v-for="(item, index) in WeiBoList" :key="item.id" class="hot-list-item" :class="{ 'top-rank': index < 3, 'has-label': item.label }">
+        <!-- 骨架屏 -->
+        <div v-if="isLoading" class="skeleton-container">
+          <div v-for="n in 10" :key="n" class="skeleton-item">
+            <div class="skeleton-rank"></div>
+            <div class="skeleton-content">
+              <div class="skeleton-title"></div>
+            </div>
+            <div class="skeleton-arrow"></div>
+          </div>
+        </div>
+        
+        <!-- 正常内容 -->
+        <div v-else v-for="(item, index) in WeiBoList" :key="item.id" class="hot-list-item" :class="{ 'top-rank': index < 3, 'has-label': item.label }">
           <div class="rank-number">{{ item.label || (index + 1) }}</div>
           <div class="item-info">
             <h4 class="item-title">{{ item.title }}</h4>
@@ -297,6 +309,63 @@ onMounted(() => {
         &:hover .item-arrow {
           transform: translateX(2px);
           color: #ff6b6b;
+        }
+      }
+
+      // 骨架屏样式
+      .skeleton-container {
+        padding: 8px 0;
+        
+        .skeleton-item {
+          display: flex;
+          align-items: center;
+          padding: 12px 16px;
+          margin: 4px 12px;
+          border-radius: 8px;
+          background-color: #fafafa;
+          
+          .skeleton-rank {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s infinite;
+            margin-right: 12px;
+          }
+          
+          .skeleton-content {
+            flex: 1;
+            min-width: 0;
+            
+            .skeleton-title {
+              height: 16px;
+              background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+              background-size: 200% 100%;
+              animation: skeleton-loading 1.5s infinite;
+              border-radius: 4px;
+              width: 80%;
+            }
+          }
+          
+          .skeleton-arrow {
+            width: 12px;
+            height: 16px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s infinite;
+            border-radius: 2px;
+            margin-left: 8px;
+          }
+        }
+      }
+      
+      @keyframes skeleton-loading {
+        0% {
+          background-position: 200% 0;
+        }
+        100% {
+          background-position: -200% 0;
         }
       }
     }

@@ -3,24 +3,7 @@
         <div class="hot_item">
             <div class="hot_header">
                 <div class="header_title">
-                    <svg t="1764726573715" class="icon" viewBox="0 0 1024 1024" version="1.1"
-                        xmlns="http://www.w3.org/2000/svg" p-id="19021" width="25" height="25">
-                        <path
-                            d="M0 0m184.32 0l655.36 0q184.32 0 184.32 184.32l0 655.36q0 184.32-184.32 184.32l-655.36 0q-184.32 0-184.32-184.32l0-655.36q0-184.32 184.32-184.32Z"
-                            fill="#FF6734" p-id="19022"></path>
-                        <path
-                            d="M716.8 225.28a81.92 81.92 0 1 0 81.92 81.92 82.01216 82.01216 0 0 0-81.92-81.92m0-71.68a153.6 153.6 0 1 1-153.6 153.6 153.6 153.6 0 0 1 153.6-153.6z"
-                            fill="#FFFFFF" p-id="19023"></path>
-                        <path
-                            d="M450.56 163.84a112.64 112.64 0 1 0 112.64 112.64 112.76288 112.76288 0 0 0-112.64-112.64m0-71.68a184.32 184.32 0 1 1-184.32 184.32 184.32 184.32 0 0 1 184.32-184.32z"
-                            fill="#FFFFFF" p-id="19024"></path>
-                        <path
-                            d="M532.48 563.2a81.92 81.92 0 0 0-81.92 81.92v92.16a81.92 81.92 0 0 0 81.92 81.92h194.56a81.92 81.92 0 0 0 81.92-81.92v-92.16a81.92 81.92 0 0 0-81.92-81.92h-194.56m0-71.68h194.56a153.77408 153.77408 0 0 1 153.6 153.6v92.16a153.77408 153.77408 0 0 1-153.6 153.6h-194.56a153.77408 153.77408 0 0 1-153.6-153.6v-92.16a153.77408 153.77408 0 0 1 153.6-153.6z"
-                            fill="#FFFFFF" p-id="19025"></path>
-                        <path
-                            d="M373.44256 691.2a20.28544 20.28544 0 0 0-10.32192-17.77664l-117.44256-67.11296a20.48 20.48 0 0 0-30.63808 17.77664v134.22592a20.48 20.48 0 0 0 30.63808 17.77664l117.44256-67.11296a20.28544 20.28544 0 0 0 10.32192-17.77664m71.68 0a92.3648 92.3648 0 0 1-46.4384 80.01536l-117.44256 67.11296A92.16 92.16 0 0 1 143.36 758.31296v-134.22592a92.16 92.16 0 0 1 137.8816-80.01536l117.44256 67.11296a92.3648 92.3648 0 0 1 46.4384 80.01536z"
-                            fill="#FFFFFF" p-id="19026"></path>
-                    </svg>
+                    <img src="../assets/快手.svg" alt="">
                     <span>
                         快手
                     </span>
@@ -36,7 +19,19 @@
                 </div>
             </div>
             <div class="hot-content">
-                <div v-for="(item, index) in WeiBoList" :key="item.id" class="hot-list-item"
+                <!-- 骨架屏 -->
+                <div v-if="isLoading" class="skeleton-container">
+                    <div v-for="n in 10" :key="n" class="skeleton-item">
+                        <div class="skeleton-rank"></div>
+                        <div class="skeleton-content">
+                            <div class="skeleton-title"></div>
+                        </div>
+                        <div class="skeleton-arrow"></div>
+                    </div>
+                </div>
+
+                <!-- 正常内容 -->
+                <div v-else v-for="(item, index) in WeiBoList" :key="item.id" class="hot-list-item"
                     :class="{ 'top-rank': index < 3, 'has-label': item.label }">
                     <div class="rank-number">{{ item.label || (index + 1) }}</div>
                     <div class="item-info">
@@ -304,6 +299,64 @@ onMounted(() => {
                 &:hover .item-arrow {
                     transform: translateX(2px);
                     color: #ff6b6b;
+                }
+            }
+
+            // 骨架屏样式
+            .skeleton-container {
+                padding: 8px 0;
+
+                .skeleton-item {
+                    display: flex;
+                    align-items: center;
+                    padding: 12px 16px;
+                    margin: 4px 12px;
+                    border-radius: 8px;
+                    background-color: #fafafa;
+
+                    .skeleton-rank {
+                        width: 24px;
+                        height: 24px;
+                        border-radius: 50%;
+                        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+                        background-size: 200% 100%;
+                        animation: skeleton-loading 1.5s infinite;
+                        margin-right: 12px;
+                    }
+
+                    .skeleton-content {
+                        flex: 1;
+                        min-width: 0;
+
+                        .skeleton-title {
+                            height: 16px;
+                            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+                            background-size: 200% 100%;
+                            animation: skeleton-loading 1.5s infinite;
+                            border-radius: 4px;
+                            width: 80%;
+                        }
+                    }
+
+                    .skeleton-arrow {
+                        width: 12px;
+                        height: 16px;
+                        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+                        background-size: 200% 100%;
+                        animation: skeleton-loading 1.5s infinite;
+                        border-radius: 2px;
+                        margin-left: 8px;
+                    }
+                }
+            }
+
+            @keyframes skeleton-loading {
+                0% {
+                    background-position: 200% 0;
+                }
+
+                100% {
+                    background-position: -200% 0;
                 }
             }
         }

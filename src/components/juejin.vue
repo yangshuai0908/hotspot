@@ -3,12 +3,7 @@
         <div class="hot_item">
             <div class="hot_header">
                 <div class="header_title">
-                    <svg t="1764726242609" class="icon" viewBox="0 0 1316 1024" version="1.1"
-                        xmlns="http://www.w3.org/2000/svg" p-id="3770" width="25" height="25">
-                        <path
-                            d="M643.181714 247.698286l154.916572-123.172572L643.181714 0.256 643.072 0l-154.660571 124.269714 154.660571 123.245715 0.109714 0.182857z m0 388.461714h0.109715l399.579428-315.245714-108.361143-87.04-291.218285 229.888h-0.146286l-0.109714 0.146285L351.817143 234.093714l-108.251429 87.04 399.433143 315.136 0.146286-0.146285z m-0.146285 215.552l0.146285-0.146286 534.893715-422.034285 108.397714 87.04-243.309714 192L643.145143 1024 10.422857 525.056 0 516.754286l108.251429-86.893715L643.035429 851.748571z"
-                            fill="#1E80FF" p-id="3771"></path>
-                    </svg>
+                    <img src="../assets/juejin.svg" alt="">
                     <span>
                         稀土掘金
                     </span>
@@ -24,7 +19,19 @@
                 </div>
             </div>
             <div class="hot-content">
-                <div v-for="(item, index) in WeiBoList" :key="item.id" class="hot-list-item"
+                <!-- 骨架屏 -->
+                <div v-if="isLoading" class="skeleton-container">
+                    <div v-for="n in 10" :key="n" class="skeleton-item">
+                        <div class="skeleton-rank"></div>
+                        <div class="skeleton-content">
+                            <div class="skeleton-title"></div>
+                        </div>
+                        <div class="skeleton-arrow"></div>
+                    </div>
+                </div>
+
+                <!-- 正常内容 -->
+                <div v-else v-for="(item, index) in WeiBoList" :key="item.id" class="hot-list-item"
                     :class="{ 'top-rank': index < 3, 'has-label': item.label }">
                     <div class="rank-number">{{ item.label || (index + 1) }}</div>
                     <div class="item-info">
@@ -292,6 +299,64 @@ onMounted(() => {
                 &:hover .item-arrow {
                     transform: translateX(2px);
                     color: #ff6b6b;
+                }
+            }
+
+            // 骨架屏样式
+            .skeleton-container {
+                padding: 8px 0;
+
+                .skeleton-item {
+                    display: flex;
+                    align-items: center;
+                    padding: 12px 16px;
+                    margin: 4px 12px;
+                    border-radius: 8px;
+                    background-color: #fafafa;
+
+                    .skeleton-rank {
+                        width: 24px;
+                        height: 24px;
+                        border-radius: 50%;
+                        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+                        background-size: 200% 100%;
+                        animation: skeleton-loading 1.5s infinite;
+                        margin-right: 12px;
+                    }
+
+                    .skeleton-content {
+                        flex: 1;
+                        min-width: 0;
+
+                        .skeleton-title {
+                            height: 16px;
+                            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+                            background-size: 200% 100%;
+                            animation: skeleton-loading 1.5s infinite;
+                            border-radius: 4px;
+                            width: 80%;
+                        }
+                    }
+
+                    .skeleton-arrow {
+                        width: 12px;
+                        height: 16px;
+                        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+                        background-size: 200% 100%;
+                        animation: skeleton-loading 1.5s infinite;
+                        border-radius: 2px;
+                        margin-left: 8px;
+                    }
+                }
+            }
+
+            @keyframes skeleton-loading {
+                0% {
+                    background-position: 200% 0;
+                }
+
+                100% {
+                    background-position: -200% 0;
                 }
             }
         }

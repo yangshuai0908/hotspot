@@ -3,21 +3,7 @@
         <div class="hot_item">
             <div class="hot_header">
                 <div class="header_title">
-                    <svg t="1764669893333" class="icon" viewBox="0 0 1024 1024" version="1.1"
-                        xmlns="http://www.w3.org/2000/svg" p-id="26608" width="25" height="25">
-                        <path
-                            d="M0 0m184.32 0l655.36 0q184.32 0 184.32 184.32l0 655.36q0 184.32-184.32 184.32l-655.36 0q-184.32 0-184.32-184.32l0-655.36q0-184.32 184.32-184.32Z"
-                            fill="#111111" p-id="26609"></path>
-                        <path
-                            d="M204.27776 670.59712a246.25152 246.25152 0 0 1 245.97504-245.97504v147.57888a98.49856 98.49856 0 0 0-98.38592 98.38592c0 48.34304 26.14272 100.352 83.54816 100.352 3.81952 0 93.55264-0.88064 93.55264-77.19936V134.35904h157.26592a133.31456 133.31456 0 0 0 133.12 132.99712l-0.13312 147.31264a273.152 273.152 0 0 1-142.62272-38.912l-0.06144 317.98272c0 146.00192-124.24192 224.77824-241.14176 224.77824-131.74784 0.03072-231.1168-106.56768-231.1168-247.92064z"
-                            fill="#FF4040" p-id="26610"></path>
-                        <path
-                            d="M164.92544 631.23456a246.25152 246.25152 0 0 1 245.97504-245.97504v147.57888a98.49856 98.49856 0 0 0-98.38592 98.38592c0 48.34304 26.14272 100.352 83.54816 100.352 3.81952 0 93.55264-0.88064 93.55264-77.19936V94.99648h157.26592a133.31456 133.31456 0 0 0 133.12 132.99712l-0.13312 147.31264a273.152 273.152 0 0 1-142.62272-38.912l-0.06144 317.98272c0 146.00192-124.24192 224.77824-241.14176 224.77824-131.74784 0.03072-231.1168-106.56768-231.1168-247.92064z"
-                            fill="#00F5FF" p-id="26611"></path>
-                        <path
-                            d="M410.91072 427.58144c-158.8224 20.15232-284.44672 222.72-154.112 405.00224 120.40192 98.47808 373.68832 41.20576 380.70272-171.85792l-0.17408-324.1472a280.7296 280.7296 0 0 0 142.88896 38.62528V261.2224a144.98816 144.98816 0 0 1-72.8064-54.82496 135.23968 135.23968 0 0 1-54.70208-72.45824h-123.66848l-0.08192 561.41824c-0.11264 78.46912-130.9696 106.41408-164.18816 30.2592-83.18976-39.77216-64.37888-190.9248 46.31552-192.57344z"
-                            fill="#FFFFFF" p-id="26612"></path>
-                    </svg>
+                    <img src="../assets/抖音.svg" alt="">
                     <span>
                         抖音
                     </span>
@@ -33,7 +19,19 @@
                 </div>
             </div>
             <div class="hot-content">
-                <div v-for="(item, index) in WeiBoList" :key="item.id" class="hot-list-item"
+                <!-- 骨架屏 -->
+                <div v-if="isLoading" class="skeleton-container">
+                    <div v-for="n in 10" :key="n" class="skeleton-item">
+                        <div class="skeleton-rank"></div>
+                        <div class="skeleton-content">
+                            <div class="skeleton-title"></div>
+                        </div>
+                        <div class="skeleton-arrow"></div>
+                    </div>
+                </div>
+
+                <!-- 正常内容 -->
+                <div v-else v-for="(item, index) in WeiBoList" :key="item.id" class="hot-list-item"
                     :class="{ 'top-rank': index < 3, 'has-label': item.label }">
                     <div class="rank-number">{{ item.label || (index + 1) }}</div>
                     <div class="item-info">
@@ -301,6 +299,64 @@ onMounted(() => {
                 &:hover .item-arrow {
                     transform: translateX(2px);
                     color: #ff6b6b;
+                }
+            }
+
+            // 骨架屏样式
+            .skeleton-container {
+                padding: 8px 0;
+
+                .skeleton-item {
+                    display: flex;
+                    align-items: center;
+                    padding: 12px 16px;
+                    margin: 4px 12px;
+                    border-radius: 8px;
+                    background-color: #fafafa;
+
+                    .skeleton-rank {
+                        width: 24px;
+                        height: 24px;
+                        border-radius: 50%;
+                        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+                        background-size: 200% 100%;
+                        animation: skeleton-loading 1.5s infinite;
+                        margin-right: 12px;
+                    }
+
+                    .skeleton-content {
+                        flex: 1;
+                        min-width: 0;
+
+                        .skeleton-title {
+                            height: 16px;
+                            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+                            background-size: 200% 100%;
+                            animation: skeleton-loading 1.5s infinite;
+                            border-radius: 4px;
+                            width: 80%;
+                        }
+                    }
+
+                    .skeleton-arrow {
+                        width: 12px;
+                        height: 16px;
+                        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+                        background-size: 200% 100%;
+                        animation: skeleton-loading 1.5s infinite;
+                        border-radius: 2px;
+                        margin-left: 8px;
+                    }
+                }
+            }
+
+            @keyframes skeleton-loading {
+                0% {
+                    background-position: 200% 0;
+                }
+
+                100% {
+                    background-position: -200% 0;
                 }
             }
         }
