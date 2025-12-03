@@ -17,7 +17,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, markRaw } from 'vue'
 import Weibo from '../components/weibo.vue'
 import Bilibili from '../components/bilibili.vue'
 import Douyin from '../components/douyin.vue'
@@ -38,23 +38,23 @@ import DoubanMovic from '../components/douban-movic.vue'
 
 // 组件配置
 const componentConfigs = [
-  { name: 'weibo', title: '微博', component: Weibo },
-  { name: 'douyin', title: '抖音', component: Douyin },
-  { name: 'bilibili', title: '哔哩哔哩', component: Bilibili },
-  { name: 'netease-music', title: '网易云音乐', component: NeteaseMusic },
-  { name: 'douban-movic', title: '豆瓣电影', component: DoubanMovic },
-  { name: 'baidu', title: '百度', component: baidu },
-  { name: 'jinritoutiao', title: '今日头条', component: Jinritoutiao },
-  { name: 'zhihu', title: '知乎', component: Zhihu },
-  { name: 'tenxun', title: '腾讯', component: Tenxun },
-  { name: 'baidutieba', title: '百度贴吧', component: Baidutieba },
-  { name: 'juejin', title: '掘金', component: Juejin },
-  { name: 'netease', title: '网易', component: Netease },
-  { name: 'lol', title: '英雄联盟', component: Lol },
-  { name: 'thepaper', title: '澎湃新闻', component: Thepaper },
-  { name: 'kuaishou', title: '快手', component: Kuaishou },
-  { name: 'history-today', title: '历史上的今天', component: HistoryToday },
-  { name: 'weread', title: '微信读书', component: Weread }
+  { name: 'weibo', title: '微博', component: markRaw(Weibo) },
+  { name: 'douyin', title: '抖音', component: markRaw(Douyin) },
+  { name: 'bilibili', title: '哔哩哔哩', component: markRaw(Bilibili) },
+  { name: 'netease-music', title: '网易云音乐', component: markRaw(NeteaseMusic) },
+  { name: 'douban-movic', title: '豆瓣电影', component: markRaw(DoubanMovic) },
+  { name: 'baidu', title: '百度', component: markRaw(baidu) },
+  { name: 'jinritoutiao', title: '今日头条', component: markRaw(Jinritoutiao) },
+  { name: 'zhihu', title: '知乎', component: markRaw(Zhihu) },
+  { name: 'tenxun', title: '腾讯', component: markRaw(Tenxun) },
+  { name: 'baidutieba', title: '百度贴吧', component: markRaw(Baidutieba) },
+  { name: 'juejin', title: '掘金', component: markRaw(Juejin) },
+  { name: 'netease', title: '网易', component: markRaw(Netease) },
+  { name: 'lol', title: '英雄联盟', component: markRaw(Lol) },
+  { name: 'thepaper', title: '澎湃新闻', component: markRaw(Thepaper) },
+  { name: 'kuaishou', title: '快手', component: markRaw(Kuaishou) },
+  { name: 'history-today', title: '历史上的今天', component: markRaw(HistoryToday) },
+  { name: 'weread', title: '微信读书', component: markRaw(Weread) }
 ]
 
 // 响应式数据
