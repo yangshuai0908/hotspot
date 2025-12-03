@@ -19,7 +19,7 @@
                             fill="#E40212" p-id="32880"></path>
                     </svg>
                     <span>
-                        腾讯
+                        腾讯新闻
                     </span>
                 </div>
                 <div class="header_title_search">
