@@ -4,6 +4,7 @@ import vue from '@vitejs/plugin-vue'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [vue()],
+  base: '/hotspot/', // GitHub Pages 仓库名称
   server: {
     proxy: {
       '/api': {
